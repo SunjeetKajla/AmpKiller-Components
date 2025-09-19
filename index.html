@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Structural Stability Assessment Tool - Component Showcase</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h3>SSAT Components</h3>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#hero" class="nav-link">Home</a></li>
+            <li><a href="#esp32cam" class="nav-link">ESP32-CAM</a></li>
+            <li><a href="#arduino_nano" class="nav-link">Arduino Nano</a></li>
+            <li><a href="#esp32" class="nav-link">ESP32</a></li>
+            <li><a href="#mq2" class="nav-link">MQ-2 Sensor</a></li>
+            <li><a href="#hcsr04" class="nav-link">HC-SR04</a></li>
+            <li><a href="#adxl345" class="nav-link">ADXL345</a></li>
+            <li><a href="#lora" class="nav-link">LoRa SX1278</a></li>
+            <li><a href="#overview" class="nav-link">System</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Structural Stability Assessment Tool</h1>
+            <h2 class="hero-subtitle">IoT-based Robotic System for Disaster Response</h2>
+            <p class="hero-description">Advanced multi-sensor platform for real-time structural assessment in disaster scenarios. Designed for rescue operations and emergency response teams.</p>
+            <div class="hero-badges">
+                <span class="badge">Team: AMP KILLERS</span>
+                <span class="badge">Smart India Hackathon 2025</span>
+                <span class="badge">Ministry of Home Affairs (MHA)</span>
+            </div>
+            <button class="btn btn--primary btn--lg" onclick="document.getElementById('esp32cam').scrollIntoView({behavior: 'smooth'})">
+                Explore Components
+            </button>
+        </div>
+        <div class="hero-3d">
+            <canvas id="hero-canvas"></canvas>
+        </div>
+    </section>
+
+    <!-- Component Sections -->
+    <section id="esp32cam" class="component-section" data-color="#4CAF50">
+        <div class="container">
+            <div class="component-content">
+                <div class="component-info">
+                    <h2 class="component-title">ESP32-CAM</h2>
+                    <p class="component-type">Camera Module</p>
+                    <p class="component-description">OV2640 camera module for real-time video streaming and visual assessment of collapsed structure interiors.</p>
+                    
+                    <div class="specifications">
+                        <h4>Technical Specifications</h4>
+                        <ul>
+                            <li>2MP OV2640 camera sensor</li>
+                            <li>WiFi Direct capability</li>
+                            <li>Real-time video streaming</li>
+                            <li>JPEG compression</li>
+                            <li>Flash LED support</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="role">
+                        <h4>System Role</h4>
+                        <p>Provides live visual feed of collapsed structure interior for remote assessment and survivor detection.</p>
+                    </div>
+                </div>
+                <div class="component-3d">
+                    <canvas id="esp32cam-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="arduino_nano" class="component-section" data-color="#2196F3">
+        <div class="container">
+            <div class="component-content">
+                <div class="component-info">
+                    <h2 class="component-title">Arduino Nano</h2>
+                    <p class="component-type">Secondary Microcontroller</p>
+                    <p class="component-description">Compact microcontroller for real-time control tasks and legacy module interfacing.</p>
+                    
+                    <div class="specifications">
+                        <h4>Technical Specifications</h4>
+                        <ul>
+                            <li>ATmega328P processor</li>
+                            <li>14 digital I/O pins</li>
+                            <li>8 analog inputs</li>
+                            <li>16MHz clock speed</li>
+                            <li>USB connectivity</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="role">
+                        <h4>System Role</h4>
+                        <p>Handles real-time sensor interfacing and legacy module communication for seamless integration.</p>
+                    </div>
+                </div>
+                <div class="component-3d">
+                    <canvas id="arduino_nano-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="esp32" class="component-section" data-color="#9C27B0">
+        <div class="container">
+            <div class="component-content">
+                <div class="component-info">
+                    <h2 class="component-title">ESP32</h2>
+                    <p class="component-type">Main Controller</p>
+                    <p class="component-description">Dual-core processor with WiFi and Bluetooth capabilities serving as the central processing unit.</p>
+                    
+                    <div class="specifications">
+                        <h4>Technical Specifications</h4>
+                        <ul>
+                            <li>Dual-core Xtensa LX6 CPU</li>
+                            <li>WiFi 802.11 b/g/n</li>
+                            <li>Bluetooth Classic & BLE</li>
+                            <li>520KB SRAM</li>
+                            <li>Multiple communication protocols</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="role">
+                        <h4>System Role</h4>
+                        <p>Central processing unit for sensor data fusion and wireless communication coordination.</p>
+                    </div>
+                </div>
+                <div class="component-3d">
+                    <canvas id="esp32-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="mq2" class="component-section" data-color="#F44336">
+        <div class="container">
+            <div class="component-content">
+                <div class="component-info">
+                    <h2 class="component-title">MQ-2 Gas Sensor</h2>
+                    <p class="component-type">Gas Detection Module</p>
+                    <p class="component-description">Multi-gas sensor for hazardous gas detection in potentially dangerous environments.</p>
+                    
+                    <div class="specifications">
+                        <h4>Technical Specifications</h4>
+                        <ul>
+                            <li>LPG, CO, smoke detection</li>
+                            <li>10-10000ppm detection range</li>
+                            <li>Analog voltage output</li>
+                            <li>Fast response time</li>
+                            <li>Low power consumption</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="role">
+                        <h4>System Role</h4>
+                        <p>Detects dangerous gas leaks and smoke in collapsed structures to ensure operator safety.</p>
+                    </div>
+                </div>
+                <div class="component-3d">
+                    <canvas id="mq2-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="hcsr04" class="component-section" data-color="#FF9800">
+        <div class="container">
+            <div class="component-content">
+                <div class="component-info">
+                    <h2 class="component-title">HC-SR04</h2>
+                    <p class="component-type">Ultrasonic Distance Sensor</p>
+                    <p class="component-description">Non-contact distance measurement sensor for precise obstacle detection and navigation.</p>
+                    
+                    <div class="specifications">
+                        <h4>Technical Specifications</h4>
+                        <ul>
+                            <li>2cm to 4m range</li>
+                            <li>15° measuring angle</li>
+                            <li>2mm accuracy</li>
+                            <li>40kHz ultrasonic frequency</li>
+                            <li>3.3V/5V compatible</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="role">
+                        <h4>System Role</h4>
+                        <p>Measures structural clearance and obstacle detection for safe autonomous navigation.</p>
+                    </div>
+                </div>
+                <div class="component-3d">
+                    <canvas id="hcsr04-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="adxl345" class="component-section" data-color="#FFEB3B">
+        <div class="container">
+            <div class="component-content">
+                <div class="component-info">
+                    <h2 class="component-title">ADXL345</h2>
+                    <p class="component-type">3-Axis Accelerometer</p>
+                    <p class="component-description">High-resolution digital accelerometer for precise vibration and movement detection.</p>
+                    
+                    <div class="specifications">
+                        <h4>Technical Specifications</h4>
+                        <ul>
+                            <li>3-axis sensing</li>
+                            <li>±16g measurement range</li>
+                            <li>13-bit resolution</li>
+                            <li>I2C/SPI interface</li>
+                            <li>Ultra-low power consumption</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="role">
+                        <h4>System Role</h4>
+                        <p>Detects structural vibrations, tilt, and movement for real-time stability assessment.</p>
+                    </div>
+                </div>
+                <div class="component-3d">
+                    <canvas id="adxl345-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="lora" class="component-section" data-color="#00BCD4">
+        <div class="container">
+            <div class="component-content">
+                <div class="component-info">
+                    <h2 class="component-title">LoRa SX1278</h2>
+                    <p class="component-type">Long-Range Communication</p>
+                    <p class="component-description">Low-power wide-area network transceiver for long-range telemetry and communication.</p>
+                    
+                    <div class="specifications">
+                        <h4>Technical Specifications</h4>
+                        <ul>
+                            <li>433MHz frequency band</li>
+                            <li>Up to 10km range</li>
+                            <li>Low power consumption</li>
+                            <li>Spread spectrum modulation</li>
+                            <li>SPI interface</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="role">
+                        <h4>System Role</h4>
+                        <p>Provides long-range telemetry to base station for remote monitoring and control.</p>
+                    </div>
+                </div>
+                <div class="component-3d">
+                    <canvas id="lora-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Overview -->
+    <section id="overview" class="overview-section">
+        <div class="container">
+            <h2 class="overview-title">Integrated IoT Solution</h2>
+            <p class="overview-description">All components work together to create a comprehensive structural stability assessment system for disaster response operations.</p>
+            
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <h4>Multi-Sensor Fusion</h4>
+                    <p>Advanced algorithms combine data from all sensors for accurate hazard detection and risk assessment.</p>
+                </div>
+                <div class="overview-card">
+                    <h4>Real-Time Monitoring</h4>
+                    <p>Continuous 250ms alert generation with live video streaming for immediate response coordination.</p>
+                </div>
+                <div class="overview-card">
+                    <h4>Long-Range Communication</h4>
+                    <p>Up to 10km communication range via LoRa technology for remote operations and base station connectivity.</p>
+                </div>
+                <div class="overview-card">
+                    <h4>Autonomous Navigation</h4>
+                    <p>AI-powered navigation through debris with obstacle avoidance and path optimization.</p>
+                </div>
+            </div>
+
+            <div class="performance-stats">
+                <div class="stat">
+                    <span class="stat-number">250ms</span>
+                    <span class="stat-label">Alert Generation</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">10km</span>
+                    <span class="stat-label">Communication Range</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">8+ Hours</span>
+                    <span class="stat-label">Operating Time</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">7 Sensors</span>
+                    <span class="stat-label">Integrated Modules</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>AMP KILLERS</h3>
+                    <p>Smart India Hackathon 2025</p>
+                    <p>Disaster Management - Hardware Category</p>
+                    <p>Ministry of Home Affairs (MHA), NDRF</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Project Links</h4>
+                    <ul>
+                        <li><a href="#hero">Project Overview</a></li>
+                        <li><a href="#overview">System Architecture</a></li>
+                        <li><a href="mailto:team@ampkillers.tech">Contact Team</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AMP KILLERS. Structural Stability Assessment Tool for Emergency Response.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
