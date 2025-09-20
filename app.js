@@ -1,37 +1,43 @@
-// Component data for 3D visualization
-const components = {
-    esp32cam: { color: 0x4CAF50, name: 'ESP32-CAM' },
-    arduino_nano: { color: 0x2196F3, name: 'Arduino Nano' },
-    esp32: { color: 0x9C27B0, name: 'ESP32' },
-    mq2: { color: 0xF44336, name: 'MQ-2 Gas Sensor' },
-    hcsr04: { color: 0xFF9800, name: 'HC-SR04' },
-    adxl345: { color: 0xFFEB3B, name: 'ADXL345' },
-    lora: { color: 0x00BCD4, name: 'LoRa SX1278' }
-};
+// Structural Stability Assessment Tool - Interactive Features with Component Images
 
-// Global variables for scenes and animations
-let scenes = {};
-let animationFrames = {};
-let isHovered = {};
-
-// Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
-    initializeNavigation();
-    initializeHeroScene();
-    initializeComponentScenes();
-    initializeIntersectionObserver();
-    initializeSmoothScrolling();
+    // Initialize the application
+    initializeApp();
 });
 
-// Navigation functionality
-function initializeNavigation() {
-    const navLinks = document.querySelectorAll('.nav-link');
+function initializeApp() {
+    // Add smooth scroll behavior for any internal links
+    addSmoothScrolling();
     
-    navLinks.forEach(link => {
+    // Add intersection observer for animations
+    addScrollAnimations();
+    
+    // Add hover effects for component cards
+    addComponentCardInteractions();
+    
+    // Add image loading optimizations
+    optimizeImageLoading();
+    
+    // Highlight the new laser projector component
+    highlightNewComponent();
+    
+    // Add statistics counter animation
+    animateStatistics();
+    
+    // Add keyboard navigation
+    addKeyboardNavigation();
+}
+
+// Smooth scrolling for internal links
+function addSmoothScrolling() {
+    const links = document.querySelectorAll('a[href^="#"]');
+    
+    links.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            const targetElement = document.getElementById(targetId);
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
             
             if (targetElement) {
                 targetElement.scrollIntoView({
@@ -41,472 +47,348 @@ function initializeNavigation() {
             }
         });
     });
-
-    // Update active nav link on scroll
-    window.addEventListener('scroll', updateActiveNavLink);
-}
-
-function updateActiveNavLink() {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        if (window.pageYOffset >= sectionTop) {
-            current = section.getAttribute('id');
-        }
-    });
-
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href').substring(1) === current) {
-            link.classList.add('active');
-        }
-    });
-}
-
-// Hero section 3D scene
-function initializeHeroScene() {
-    const canvas = document.getElementById('hero-canvas');
-    if (!canvas) return;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-    
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setClearColor(0x000000, 0);
-
-    // Create multiple geometric shapes representing the IoT system
-    const geometries = [
-        new THREE.BoxGeometry(1, 1, 1),
-        new THREE.SphereGeometry(0.7, 16, 16),
-        new THREE.ConeGeometry(0.7, 1.2, 8),
-        new THREE.CylinderGeometry(0.5, 0.5, 1, 8),
-        new THREE.TorusGeometry(0.6, 0.3, 8, 16),
-        new THREE.OctahedronGeometry(0.8),
-        new THREE.TetrahedronGeometry(0.9)
-    ];
-
-    const materials = Object.values(components).map(comp => 
-        new THREE.MeshPhongMaterial({ 
-            color: comp.color,
-            transparent: true,
-            opacity: 0.8,
-            shininess: 100
-        })
-    );
-
-    const meshes = [];
-    
-    geometries.forEach((geometry, index) => {
-        const material = materials[index % materials.length];
-        const mesh = new THREE.Mesh(geometry, material);
-        
-        // Position meshes in a circular formation
-        const angle = (index / geometries.length) * Math.PI * 2;
-        const radius = 3;
-        mesh.position.x = Math.cos(angle) * radius;
-        mesh.position.y = Math.sin(angle) * 0.5;
-        mesh.position.z = Math.sin(angle) * radius;
-        
-        // Add random rotation
-        mesh.rotation.x = Math.random() * Math.PI;
-        mesh.rotation.y = Math.random() * Math.PI;
-        mesh.rotation.z = Math.random() * Math.PI;
-        
-        scene.add(mesh);
-        meshes.push(mesh);
-    });
-
-    // Add lighting
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
-
-    const pointLight = new THREE.PointLight(0x00bcd4, 0.5);
-    pointLight.position.set(-5, -5, 5);
-    scene.add(pointLight);
-
-    camera.position.z = 8;
-
-    // Animation loop
-    function animate() {
-        requestAnimationFrame(animate);
-        
-        meshes.forEach((mesh, index) => {
-            mesh.rotation.x += 0.005 + index * 0.001;
-            mesh.rotation.y += 0.003 + index * 0.001;
-            mesh.rotation.z += 0.002 + index * 0.001;
-            
-            // Floating animation
-            mesh.position.y += Math.sin(Date.now() * 0.001 + index) * 0.002;
-        });
-
-        renderer.render(scene, camera);
-    }
-    animate();
-
-    // Handle resize
-    function handleResize() {
-        const width = canvas.clientWidth;
-        const height = canvas.clientHeight;
-        
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        renderer.setSize(width, height);
-    }
-    
-    window.addEventListener('resize', handleResize);
-    
-    scenes.hero = { scene, camera, renderer, meshes };
-}
-
-// Component scenes initialization
-function initializeComponentScenes() {
-    Object.keys(components).forEach(componentId => {
-        createComponentScene(componentId, components[componentId]);
-    });
-}
-
-function createComponentScene(componentId, componentData) {
-    const canvas = document.getElementById(`${componentId}-canvas`);
-    if (!canvas) return;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-    
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setClearColor(0x000000, 0);
-
-    // Create component-specific geometry
-    let geometry;
-    switch(componentId) {
-        case 'esp32cam':
-            geometry = new THREE.BoxGeometry(2, 1, 0.3);
-            break;
-        case 'arduino_nano':
-            geometry = new THREE.BoxGeometry(1.8, 0.7, 0.2);
-            break;
-        case 'esp32':
-            geometry = new THREE.BoxGeometry(2.5, 1.2, 0.3);
-            break;
-        case 'mq2':
-            geometry = new THREE.CylinderGeometry(0.8, 0.8, 1.5, 16);
-            break;
-        case 'hcsr04':
-            geometry = new THREE.BoxGeometry(1.8, 0.8, 0.6);
-            break;
-        case 'adxl345':
-            geometry = new THREE.BoxGeometry(0.8, 0.8, 0.2);
-            break;
-        case 'lora':
-            geometry = new THREE.BoxGeometry(1.5, 1, 0.2);
-            break;
-        default:
-            geometry = new THREE.BoxGeometry(1, 1, 1);
-    }
-
-    const material = new THREE.MeshPhongMaterial({
-        color: componentData.color,
-        transparent: true,
-        opacity: 0.9,
-        shininess: 100
-    });
-
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-
-    // Add wireframe overlay
-    const wireframeMaterial = new THREE.MeshBasicMaterial({
-        color: componentData.color,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.3
-    });
-    const wireframeMesh = new THREE.Mesh(geometry.clone(), wireframeMaterial);
-    wireframeMesh.scale.setScalar(1.02);
-    scene.add(wireframeMesh);
-
-    // Add component-specific details
-    if (componentId === 'esp32cam') {
-        // Add camera lens
-        const lensGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-        const lensMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
-        const lens = new THREE.Mesh(lensGeometry, lensMaterial);
-        lens.position.set(0.5, 0, 0.2);
-        scene.add(lens);
-    } else if (componentId === 'mq2') {
-        // Add sensor pins
-        const pinGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.5, 8);
-        const pinMaterial = new THREE.MeshPhongMaterial({ color: 0xcccccc });
-        for (let i = 0; i < 6; i++) {
-            const pin = new THREE.Mesh(pinGeometry, pinMaterial);
-            pin.position.set((i - 2.5) * 0.2, -1, 0);
-            scene.add(pin);
-        }
-    } else if (componentId === 'hcsr04') {
-        // Add ultrasonic sensors
-        const sensorGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.3, 16);
-        const sensorMaterial = new THREE.MeshPhongMaterial({ color: 0x666666 });
-        const sensor1 = new THREE.Mesh(sensorGeometry, sensorMaterial);
-        const sensor2 = new THREE.Mesh(sensorGeometry, sensorMaterial);
-        sensor1.position.set(-0.4, 0, 0.4);
-        sensor2.position.set(0.4, 0, 0.4);
-        scene.add(sensor1);
-        scene.add(sensor2);
-    }
-
-    // Add lighting
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(2, 2, 5);
-    scene.add(directionalLight);
-
-    const pointLight = new THREE.PointLight(componentData.color, 0.3);
-    pointLight.position.set(-2, 2, 3);
-    scene.add(pointLight);
-
-    camera.position.z = 5;
-
-    // Store scene data
-    scenes[componentId] = {
-        scene,
-        camera,
-        renderer,
-        mesh,
-        wireframeMesh,
-        baseRotationSpeed: 0.005,
-        currentRotationSpeed: 0.005,
-        isHovered: false
-    };
-
-    // Add mouse interaction
-    canvas.addEventListener('mouseenter', () => {
-        scenes[componentId].isHovered = true;
-        scenes[componentId].currentRotationSpeed = 0.02;
-        mesh.scale.setScalar(1.1);
-        wireframeMesh.scale.setScalar(1.12);
-    });
-
-    canvas.addEventListener('mouseleave', () => {
-        scenes[componentId].isHovered = false;
-        scenes[componentId].currentRotationSpeed = 0.005;
-        mesh.scale.setScalar(1);
-        wireframeMesh.scale.setScalar(1.02);
-    });
-
-    canvas.addEventListener('click', () => {
-        // Add click effect
-        const originalScale = mesh.scale.clone();
-        mesh.scale.setScalar(1.3);
-        wireframeMesh.scale.setScalar(1.32);
-        
-        setTimeout(() => {
-            mesh.scale.copy(originalScale);
-            wireframeMesh.scale.setScalar(originalScale.x + 0.02);
-        }, 150);
-    });
-
-    // Start animation
-    animateComponent(componentId);
-
-    // Handle resize
-    function handleResize() {
-        const width = canvas.clientWidth;
-        const height = canvas.clientHeight;
-        
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        renderer.setSize(width, height);
-    }
-    
-    window.addEventListener('resize', handleResize);
-}
-
-function animateComponent(componentId) {
-    const sceneData = scenes[componentId];
-    if (!sceneData) return;
-
-    function animate() {
-        animationFrames[componentId] = requestAnimationFrame(animate);
-        
-        // Rotate the main mesh
-        sceneData.mesh.rotation.x += sceneData.currentRotationSpeed;
-        sceneData.mesh.rotation.y += sceneData.currentRotationSpeed * 1.5;
-        sceneData.mesh.rotation.z += sceneData.currentRotationSpeed * 0.5;
-        
-        // Rotate wireframe slightly differently
-        sceneData.wireframeMesh.rotation.x += sceneData.currentRotationSpeed * 0.8;
-        sceneData.wireframeMesh.rotation.y += sceneData.currentRotationSpeed * 1.2;
-        sceneData.wireframeMesh.rotation.z += sceneData.currentRotationSpeed * 0.3;
-        
-        // Add floating animation
-        sceneData.mesh.position.y = Math.sin(Date.now() * 0.001) * 0.1;
-        sceneData.wireframeMesh.position.y = Math.sin(Date.now() * 0.001 + 0.5) * 0.05;
-
-        sceneData.renderer.render(sceneData.scene, sceneData.camera);
-    }
-    animate();
 }
 
 // Intersection Observer for scroll animations
-function initializeIntersectionObserver() {
+function addScrollAnimations() {
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
-
-    const observer = new IntersectionObserver((entries) => {
+    
+    const observer = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate-in');
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
                 
-                // Trigger 3D animation enhancements when section is visible
-                const sectionId = entry.target.id;
-                if (scenes[sectionId]) {
-                    enhanceComponentAnimation(sectionId);
+                // Trigger statistics animation when statistics section comes into view
+                if (entry.target.classList.contains('statistics')) {
+                    animateStatistics();
                 }
             }
         });
     }, observerOptions);
-
-    // Observe all component sections
-    const sections = document.querySelectorAll('.component-section, .overview-section');
-    sections.forEach(section => observer.observe(section));
     
-    // Observe individual elements for staggered animations
-    const elementsToAnimate = document.querySelectorAll('.component-title, .component-description, .specifications, .role, .overview-card, .stat');
-    elementsToAnimate.forEach((element, index) => {
-        setTimeout(() => {
-            const elementObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.animationDelay = `${index * 0.1}s`;
-                        entry.target.classList.add('animate-in');
-                    }
-                });
-            }, observerOptions);
-            elementObserver.observe(element);
-        }, index * 50);
+    // Observe component cards
+    const componentCards = document.querySelectorAll('.component-card');
+    componentCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+        observer.observe(card);
+    });
+    
+    // Observe feature cards
+    const featureCards = document.querySelectorAll('.feature-card');
+    featureCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+        observer.observe(card);
+    });
+    
+    // Observe statistics section
+    const statistics = document.querySelector('.statistics');
+    if (statistics) {
+        statistics.style.opacity = '0';
+        statistics.style.transform = 'translateY(30px)';
+        statistics.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        observer.observe(statistics);
+    }
+    
+    // Observe solution section
+    const solution = document.querySelector('.solution');
+    if (solution) {
+        solution.style.opacity = '0';
+        solution.style.transform = 'translateY(30px)';
+        solution.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        observer.observe(solution);
+    }
+}
+
+// Enhanced component card interactions
+function addComponentCardInteractions() {
+    const componentCards = document.querySelectorAll('.component-card');
+    
+    componentCards.forEach(card => {
+        // Add click-to-focus functionality for accessibility
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'article');
+        
+        // Add ARIA labels for better accessibility
+        const cardName = card.querySelector('.component-card__name').textContent;
+        const cardCategory = card.querySelector('.component-card__category').textContent;
+        card.setAttribute('aria-label', `${cardName} - ${cardCategory} component details`);
+        
+        // Add keyboard navigation
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
+        
+        // Add hover effects with image scaling
+        const image = card.querySelector('.component-card__image img');
+        if (image) {
+            card.addEventListener('mouseenter', function() {
+                image.style.transition = 'transform 0.3s ease';
+                image.style.transform = 'scale(1.05)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                image.style.transform = 'scale(1)';
+            });
+        }
+        
+        // Add click animation
+        card.addEventListener('click', function() {
+            this.style.transform = 'translateY(-6px) scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
     });
 }
 
-function enhanceComponentAnimation(componentId) {
-    const sceneData = scenes[componentId];
-    if (!sceneData) return;
-
-    // Add a temporary speed boost when section comes into view
-    sceneData.currentRotationSpeed = 0.03;
+// Optimize image loading with lazy loading and error handling
+function optimizeImageLoading() {
+    const images = document.querySelectorAll('.component-card__image img');
     
-    setTimeout(() => {
-        if (!sceneData.isHovered) {
-            sceneData.currentRotationSpeed = sceneData.baseRotationSpeed;
-        }
-    }, 2000);
+    images.forEach(img => {
+        // Add loading placeholder
+        img.style.opacity = '0';
+        img.style.transition = 'opacity 0.5s ease';
+        
+        // Handle successful image load
+        img.addEventListener('load', function() {
+            this.style.opacity = '1';
+        });
+        
+        // Handle image load errors
+        img.addEventListener('error', function() {
+            console.warn('Failed to load image:', this.src);
+            this.style.opacity = '0.5';
+            this.alt = 'Image unavailable';
+            
+            // Create a fallback placeholder
+            const placeholder = document.createElement('div');
+            placeholder.className = 'image-placeholder';
+            placeholder.textContent = 'Component Image';
+            placeholder.style.cssText = `
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: var(--color-bg-2);
+                color: var(--color-text-secondary);
+                font-size: var(--font-size-sm);
+                border-radius: var(--radius-sm);
+            `;
+            
+            this.parentNode.appendChild(placeholder);
+            this.style.display = 'none';
+        });
+    });
 }
 
-// Smooth scrolling functionality
-function initializeSmoothScrolling() {
-    // Handle scroll behavior for better performance
+// Special highlighting for the new laser projector component
+function highlightNewComponent() {
+    const newComponent = document.querySelector('.component-card--new');
+    
+    if (newComponent) {
+        // Add a subtle pulse animation to draw attention
+        setTimeout(() => {
+            newComponent.style.animation = 'subtle-pulse 2s ease-in-out 3';
+        }, 1500);
+        
+        // Remove animation after it completes
+        setTimeout(() => {
+            newComponent.style.animation = '';
+        }, 7500);
+        
+        // Add special hover effect for new component
+        newComponent.addEventListener('mouseenter', function() {
+            const badge = this.querySelector('.component-card__badge');
+            if (badge) {
+                badge.style.transform = 'scale(1.1) rotate(-5deg)';
+                badge.style.transition = 'transform 0.3s ease';
+            }
+        });
+        
+        newComponent.addEventListener('mouseleave', function() {
+            const badge = this.querySelector('.component-card__badge');
+            if (badge) {
+                badge.style.transform = '';
+            }
+        });
+    }
+}
+
+// Animate statistics with counting effect
+function animateStatistics() {
+    const statCards = document.querySelectorAll('.stat-card');
+    
+    statCards.forEach(card => {
+        const valueElement = card.querySelector('.stat-card__value');
+        const finalValue = valueElement.textContent;
+        
+        // Extract numeric value for animation
+        const numericMatch = finalValue.match(/(\d+)/);
+        if (numericMatch) {
+            const targetNumber = parseInt(numericMatch[1]);
+            const suffix = finalValue.replace(numericMatch[1], '');
+            
+            let currentNumber = 0;
+            const increment = Math.ceil(targetNumber / 50);
+            const duration = 2000; // 2 seconds
+            const stepTime = duration / (targetNumber / increment);
+            
+            const counter = setInterval(() => {
+                currentNumber += increment;
+                if (currentNumber >= targetNumber) {
+                    currentNumber = targetNumber;
+                    clearInterval(counter);
+                }
+                valueElement.textContent = currentNumber + suffix;
+            }, stepTime);
+        }
+    });
+}
+
+// Add keyboard navigation for better accessibility
+function addKeyboardNavigation() {
+    const focusableElements = document.querySelectorAll(
+        '.component-card, .feature-card, .stat-card, button, a, input, select, textarea'
+    );
+    
+    focusableElements.forEach((element, index) => {
+        element.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowDown' || (e.key === 'Tab' && !e.shiftKey)) {
+                e.preventDefault();
+                const nextIndex = (index + 1) % focusableElements.length;
+                focusableElements[nextIndex].focus();
+            } else if (e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey)) {
+                e.preventDefault();
+                const prevIndex = index === 0 ? focusableElements.length - 1 : index - 1;
+                focusableElements[prevIndex].focus();
+            }
+        });
+    });
+}
+
+// Add dynamic styles for animations
+function addDynamicStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes subtle-pulse {
+            0%, 100% {
+                transform: translateY(-2px) scale(1);
+                box-shadow: var(--shadow-lg);
+            }
+            50% {
+                transform: translateY(-6px) scale(1.02);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 15px -5px rgba(var(--color-primary-rgb), 0.2);
+            }
+        }
+        
+        .image-placeholder {
+            animation: placeholder-shimmer 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes placeholder-shimmer {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+        
+        .component-card:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+    `;
+    
+    document.head.appendChild(style);
+}
+
+// Initialize dynamic styles
+addDynamicStyles();
+
+// Add performance monitoring for smooth animations
+function optimizePerformance() {
+    // Use requestAnimationFrame for smooth animations
     let ticking = false;
     
-    function updateScroll() {
-        updateActiveNavLink();
+    function updateAnimations() {
+        // Perform any frame-based animations here
         ticking = false;
     }
     
-    window.addEventListener('scroll', () => {
+    function requestTick() {
         if (!ticking) {
-            requestAnimationFrame(updateScroll);
+            requestAnimationFrame(updateAnimations);
             ticking = true;
         }
-    });
-
-    // Add scroll-triggered effects
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const parallax = document.querySelector('.hero');
-        if (parallax) {
-            const speed = scrolled * 0.5;
-            parallax.style.transform = `translateY(${speed}px)`;
-        }
-    });
-}
-
-// Utility functions
-function hexToRgb(hex) {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
-}
-
-// Error handling
-window.addEventListener('error', function(e) {
-    console.error('Application error:', e.error);
-});
-
-// Performance monitoring
-function monitorPerformance() {
-    let lastTime = performance.now();
-    let frameCount = 0;
-    
-    function checkFPS() {
-        frameCount++;
-        const currentTime = performance.now();
-        
-        if (currentTime - lastTime >= 1000) {
-            const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
-            
-            // Adjust quality based on FPS
-            if (fps < 30) {
-                Object.values(scenes).forEach(scene => {
-                    if (scene.renderer) {
-                        scene.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1));
-                    }
-                });
-            }
-            
-            frameCount = 0;
-            lastTime = currentTime;
-        }
-        
-        requestAnimationFrame(checkFPS);
     }
     
-    checkFPS();
-}
-
-// Initialize performance monitoring
-monitorPerformance();
-
-// Cleanup function for better memory management
-function cleanup() {
-    Object.values(animationFrames).forEach(frameId => {
-        if (frameId) cancelAnimationFrame(frameId);
-    });
-    
-    Object.values(scenes).forEach(scene => {
-        if (scene.renderer) {
-            scene.renderer.dispose();
+    // Throttle scroll events for better performance
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+        if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
         }
+        
+        scrollTimeout = setTimeout(function() {
+            requestTick();
+        }, 10);
     });
 }
 
-// Clean up on page unload
-window.addEventListener('beforeunload', cleanup);
+// Initialize performance optimizations
+optimizePerformance();
 
-// Export for potential external use
+// Add error handling for better user experience
+window.addEventListener('error', function(e) {
+    console.warn('Non-critical error occurred:', e.message);
+});
+
+// Add resize handler for responsive adjustments
+let resizeTimeout;
+window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(function() {
+        // Re-optimize layout if needed
+        const images = document.querySelectorAll('.component-card__image img');
+        images.forEach(img => {
+            if (img.naturalWidth === 0) {
+                img.style.opacity = '0.5';
+            }
+        });
+    }, 250);
+});
+
+// Add print optimization
+window.addEventListener('beforeprint', function() {
+    // Ensure all images are visible for printing
+    const images = document.querySelectorAll('.component-card__image img');
+    images.forEach(img => {
+        img.style.opacity = '1';
+        img.style.transform = 'none';
+    });
+});
+
+// Export functions for potential testing or external use
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { scenes, components, cleanup };
+    module.exports = {
+        initializeApp,
+        addSmoothScrolling,
+        addScrollAnimations,
+        addComponentCardInteractions,
+        optimizeImageLoading,
+        highlightNewComponent,
+        animateStatistics,
+        addKeyboardNavigation
+    };
 }
